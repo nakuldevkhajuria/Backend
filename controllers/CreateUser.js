@@ -1,7 +1,63 @@
 
+const asyncHandler = require("express-async-handler")
+const {validationResult} = require("express-validator")
+const UserModel = require("../models/UserModel");
+const generateToken = require("../config/jwt");
 
+
+
+const getUserByToken = asyncHandler( async (req,res)=>{
+    try {
+
+        const { _id } = req.userData;
+       
+        
+        // validateMongodbId(id);
+        //validating using Mongodb isValid method
+        //checks if the id is hexadecimal 24 characters
+
+        const user = await UserModel.findById(_id)
+
+        if (user) { res.json(user); }
+        else { res.json(message = 'This id is not present in the database') }
+
+    }
+     catch (error) {
+        throw new Error(error)
+    }
+})
+
+
+const getUserById = asyncHandler( async (req,res)=>{
+    try {
+
+       const { id } = req.params; 
+       
+        
+        // validateMongodbId(id);
+        //validating using Mongodb isValid method
+        //checks if the id is hexadecimal 24 characters
+
+        const user = await UserModel.findById(id)
+
+        if (user) { res.json(user); }
+        else { res.json(message = 'This id is not present in the database') }
+
+    }
+     catch (error) {
+        throw new Error(error)
+    }
+})
 
 const createUser = asyncHandler(async (req, res) => {
+
+    // const errors = validationResult(req);
+
+    // if (!errors.isEmpty()) {
+    //   return res.status(400).json({ errors: errors.array() });
+    // }
+
+
     const email = req.body.email;
     const findUser = await UserModel.findOne({ email: email })
 
@@ -19,17 +75,14 @@ const loginUser = asyncHandler(
     async (req, res) => {
         const { email, password } = req.body;
         //check if user exisits or not
-        const findUser = await UserModel.findOne({ email })
-
-        if (findUser && (await findUser.isPasswordMatched(password))) {
+        const findUser = await UserModel.findOne({ email:email })
+console.log(findUser)
+        if (findUser && (await findUser.isPasswordCorrect(password))) {
 
         
             res.json({
                 _id: findUser._id,
-                firstname: findUser.firstname,
-                lastname: findUser.lastname,
                 email: findUser.email,
-                mobile: findUser.mobile,
                 token: generateToken(findUser._id)
             })
         }
@@ -40,4 +93,4 @@ const loginUser = asyncHandler(
     }
 )
 
-module.exports = {createUser,loginUser}
+module.exports = {createUser,loginUser,getUserByToken,getUserById}

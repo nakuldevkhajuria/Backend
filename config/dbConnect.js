@@ -11,7 +11,7 @@ const dbConnect =async()=>{
         console.log('db is conencted') 
     } 
     catch (error) {
-        throw error;
+        throw new Error(error);
     }
 }
 
