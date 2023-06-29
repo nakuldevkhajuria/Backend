@@ -89,7 +89,8 @@ const retrieveAds =asyncHandler( async (req, res, next) => {
   });
 
 
- const findAd = asyncHandler( async (req, res, next) => {
+ const findAd = asyncHandler( 
+    async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -119,11 +120,12 @@ const retrieveAds =asyncHandler( async (req, res, next) => {
     }
   
     const adId = req.params.id;
+    console.log(adId)
     try {
       // Check for authorization
-      let ad = await Ad.findById(adId);
+      let ad = await Ad.findById(adId);//this ad, has the data from the database
       if (!ad) return res.status(404).json({ errors: [{ msg: 'Ad not found' }] });
-      if (ad.owner != req.user.id)
+      if (ad.owner != req.userData.id)//but this ad.owner is the real owner. and userData.id is the id of the person trying to update the ad.
         return res
           .status(401)
           .json({ errors: [{ msg: 'Unauthorized to delete this ad' }] });
@@ -149,7 +151,7 @@ const retrieveAds =asyncHandler( async (req, res, next) => {
     try {
       let ad = await Ad.findById(adId);
       if (!ad) return res.status(404).json({ errors: [{ msg: 'Ad not found' }] });
-      if (ad.owner != req.user.id)
+      if (ad.owner != req.userData.id)
         return res
           .status(401)
           .json({ errors: [{ msg: 'Unauthorized to delete this ad' }] });

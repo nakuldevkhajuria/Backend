@@ -1,6 +1,6 @@
 const express = require("express");
 const { isAuthorized } = require("../middlewares/isAuthorized");
-const { addAd } = require("../controllers/CreateAds");
+const { addAd, retrieveAds ,findAd,deleteAd, updateAd } = require("../controllers/CreateAds");
 const { check } = require("express-validator");
 
 const router = express.Router();
@@ -18,24 +18,24 @@ addAd)
 // @route   GET /ad?user=<userId>&option=<active>
 // @desc    Retrieve list of all ads. Optional query param of user.
 // @access  protected
-// router.get('/?', isAuthorized, retrieveAds);
+router.get('/?', isAuthorized, retrieveAds);
 
 // // @route   GET api/ads/:id
 // // @desc   find one ad
 // // @access  protected
-// router.get('/:id', isAuthorized,findAds);
+router.get('/:id', isAuthorized,findAd);
 
 
 // // @route   GET api/ads/:id
 // // @desc   update one ad
 // // @access  protected
-// router.put("/:id", isAuthorized,updateAds);
+router.put("/:id", isAuthorized,updateAd);
 
 
 // // @route   GET api/ads/:id
 // // @desc   delete one ad
 // // @access  protected
-// router.delete("/:id", isAuthorized,deleteAds);
+router.delete("/:id", isAuthorized,deleteAd);
 
 
 module.exports = router
