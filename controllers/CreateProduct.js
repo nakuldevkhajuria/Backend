@@ -15,10 +15,23 @@ const purchasedProducts = asyncHandler(
 
         await user.populate('purchasedProducts');
         // populate with the corresponding documents from the referenced collection ('ad' collection in this case)
-        
+
         res.status(200).json(user.purchasedProducts);
    
     }
 )
 
-module.exports= {purchasedProducts}
+const postedProducts = asyncHandler(async (req,res)=>{
+    const  user  = req.userData;
+    try {
+    const fetchedUser = await UserModel.findById(user._id);
+    await fetchedUser.populate('postedAds')   ;
+    res.status(200).json(fetchedUser.postedAds) 
+    } 
+    catch (error) {
+        throw new Error(error);
+    }
+
+})
+
+module.exports= {purchasedProducts,postedProducts}

@@ -14,6 +14,7 @@ const isAuthorized = asyncHandler(
                 if(decoder){
                     const user = await UserModel.findById(decoder?.id)
                     req.userData = user;
+                    
               console.log(req.userData)
                     next()
                 }

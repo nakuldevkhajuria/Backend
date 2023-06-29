@@ -6,10 +6,23 @@ const cors = require("cors")
 const PORT = process.env.PORT ;
 const userRoute = require("./routes/UserRoute");
 const productRoute = require("./routes/ProductRoute")
-const dbConnect = require("./config/dbConnect");
+const adsRoute = require("./routes/AdsRoute")
+const { createServer } = require('http');
 
+const multer = require('multer');
+const socketio = require('./socket');
+// const swaggerUi = require('swagger-ui-express');
+// const swaggerDoc = require('./documentation/swaggerSetup');
+
+const dbConnect = require("./config/dbConnect");
 const app = express();
 
+
+
+const server = createServer(app);
+const io = socketio.init(server);
+const adIo = socketio.initAdIo(server, '/socket/adpage');
+const upload = multer({ dest: 'uploads/' });
 
 //CORS
 app.use(cors())
@@ -25,6 +38,37 @@ app.use(express.json())
 //Routes
 app.use("/api/user",userRoute)
 app.use("/api/product",productRoute)
+app.use("/api/ads",adsRoute)
+
+
+// Socket.io setup
+// const PORT = process.env.PORT || 5000;
+io.on('connection', (socket) => {
+  // console.log('### Socket IO client connected');
+  socket.on('disconnect', (reason) => {
+    // console.log('### Socket IO client disconnected');
+  });
+  socket.on('leaveHome', () => {
+    socket.disconnect();
+  });
+});
+adIo.on('connect', (socket) => {
+  // socket.join('testroom')
+  socket.on('joinAd', ({ ad }) => {
+    socket.join(ad.toString());
+    // console.log(`User joined room ${ad}`);
+  });
+  socket.on('leaveAd', ({ ad }) => {
+    socket.leave(ad.toString());
+    // console.log(`Left room ${ad}`);
+  });
+  socket.on('disconnect', () => {
+    // console.log('User has disconnect from ad');
+  });
+});
+
+
+// Connect DB and Initialize server
 
 
 app.listen(PORT, async()=>{
