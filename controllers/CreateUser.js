@@ -83,6 +83,9 @@ console.log(findUser)
             res.json({
                 _id: findUser._id,
                 email: findUser.email,
+                phone:findUser.phone,
+                address:findUser.address,
+                
                 token: generateToken(findUser._id)
             })
         }
