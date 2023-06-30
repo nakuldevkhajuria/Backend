@@ -6,7 +6,10 @@ const cors = require("cors")
 const PORT = process.env.PORT ;
 const userRoute = require("./routes/UserRoute");
 const productRoute = require("./routes/ProductRoute")
-const adsRoute = require("./routes/AdsRoute")
+const adRoute = require("./routes/AdsRoute")
+const bidRoute = require("./routes/BidRoute")
+
+
 const { createServer } = require('http');
 
 const multer = require('multer');
@@ -25,7 +28,7 @@ const server = createServer(app);
 // const io = socketio.init(server);
 const io = socketio(server);
 // const adIo = socketio.initAdIo(server, '/socket/adpage');
-const adIo = socketio(server,'/socket/adpage')
+const adIo = socketio(server,{path : '/socket/adpage'})
 const upload = multer({ dest: 'uploads/' });
 
 //CORS
@@ -42,10 +45,11 @@ app.use(express.json())
 //Routes
 app.use("/api/user",userRoute)
 app.use("/api/product",productRoute)
-app.use("/api/ads",adsRoute)
+app.use("/api/ad",adRoute)
+app.use("/api/bid",bidRoute)
 
 //The server logic goes here
-// Socket.io setup
+
 // Usage of io 
 io.on('connection', (socket) => {
   // console.log('### Socket IO client connected');
