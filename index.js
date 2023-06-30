@@ -10,7 +10,9 @@ const adsRoute = require("./routes/AdsRoute")
 const { createServer } = require('http');
 
 const multer = require('multer');
-const socketio = require('./socket');
+// const socketio = require('./socket');
+const socketio = require("socket.io")
+const socketioHandler = require("./socket")
 // const swaggerUi = require('swagger-ui-express');
 // const swaggerDoc = require('./documentation/swaggerSetup');
 
@@ -20,8 +22,10 @@ const app = express();
 
 
 const server = createServer(app);
-const io = socketio.init(server);
-const adIo = socketio.initAdIo(server, '/socket/adpage');
+// const io = socketio.init(server);
+const io = socketio(server);
+// const adIo = socketio.initAdIo(server, '/socket/adpage');
+const adIo = socketio(server,'/socket/adpage')
 const upload = multer({ dest: 'uploads/' });
 
 //CORS
@@ -40,9 +44,9 @@ app.use("/api/user",userRoute)
 app.use("/api/product",productRoute)
 app.use("/api/ads",adsRoute)
 
-
+//The server logic goes here
 // Socket.io setup
-// const PORT = process.env.PORT || 5000;
+// Usage of io 
 io.on('connection', (socket) => {
   // console.log('### Socket IO client connected');
   socket.on('disconnect', (reason) => {
@@ -52,6 +56,8 @@ io.on('connection', (socket) => {
     socket.disconnect();
   });
 });
+
+//Usage of io and adIo
 adIo.on('connect', (socket) => {
   // socket.join('testroom')
   socket.on('joinAd', ({ ad }) => {
@@ -67,10 +73,12 @@ adIo.on('connect', (socket) => {
   });
 });
 
+// Pass the io and adIo instances to the socketioHandler
+socketioHandler.init(io, adIo);
+
+
 
 // Connect DB and Initialize server
-
-
 app.listen(PORT, async()=>{
     await dbConnect();
     console.log(`server is running on port ${PORT}`)

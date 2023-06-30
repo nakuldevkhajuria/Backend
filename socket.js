@@ -1,29 +1,12 @@
-const { Server } = require('socket.io');
+
 let io;
 let adIo;
 
-exports.init = (server) => {
-  io = new Server(server, {
-    cors: {
-      origin: process.env.CLIENT_BASE_URL,
-      methods: ['*'],
-      allowedHeaders: ['*'],
-    },
-  });
-  return io;
-};
 
-exports.initAdIo = (server, path = '/socket/adpage') => {
-  adIo = new Server(server, {
-    cors: {
-      origin: process.env.CLIENT_BASE_URL,
-      methods: ['*'],
-      allowedHeaders: ['*'],
-    },
-    path: path,
-  });
-  return adIo;
-};
+exports.init = (mainIo,mainAdIo)=>{
+  io = mainIo;
+  adIo = mainAdIo;
+}
 
 exports.getIo = () => {
   if (!io) {
