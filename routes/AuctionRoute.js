@@ -4,7 +4,6 @@ const startAuction = require('../controllers/CreateAuction');
 
 const router = express.Router();
 
-const isAuth = require('../middlewares/isAuth');
 const { isAuthorized } = require('../middlewares/isAuthorized');
 
 // @route   GET /auction/start/:adId

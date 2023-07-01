@@ -1,9 +1,10 @@
 
 const RoomModel = require('../models/RoomModel');
+const asyncHandler = require("express-async-handler")
 
 // @route   POST /room/join/:roomId
 // @desc    Add user to a room
-exports.joinRoom = async (req, res, next) => {
+const joinRoom =asyncHandler( async (req, res, next) => {
   const { userData } = req.userData;
   const { roomId } = req.params;
 
@@ -24,11 +25,11 @@ exports.joinRoom = async (req, res, next) => {
     console.log(error);
     res.status(500).json({ errors: [{ msg: 'Server error' }] });
   }
-};
+});
 
 // @route   GET /room/:roomId
 // @desc    Get room details
-exports.getRoom = async (req, res, next) => {
+const getRoom = asyncHandler(async (req, res, next) => {
   const { roomId } = req.params;
 
   try {
@@ -38,4 +39,6 @@ exports.getRoom = async (req, res, next) => {
     console.log(error);
     res.status(500).json({ errors: [{ msg: 'Server error' }] });
   }
-};
+});
+
+module.exports = {joinRoom,getRoom}

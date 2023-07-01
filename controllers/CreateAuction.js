@@ -1,12 +1,13 @@
 
 const AdModel = require('../models/AdModel');
-const User = require('../models/User');
+
 const UserModel = require('../models/UserModel');
+const asyncHandler = require("express-async-handler")
 const io = require('../socket');
 
 // @route   POST /auction/start/:adId
 // @desc    Start auction
-exports.startAuction = async (req, res, next) => {
+const startAuction =asyncHandler( async (req, res, next) => {
   const { adId } = req.params;
   try {
     let ad = await AdModel.findById(adId).populate('owner', { password: 0 });
@@ -42,7 +43,7 @@ exports.startAuction = async (req, res, next) => {
     }, 1000);
     setTimeout(async () => {
       clearInterval(intervalTimer);
-      let auctionEndAd = await Ad.findById(ad._id).populate('owner', { password: 0 });
+      let auctionEndAd = await AdModel.findById(ad._id).populate('owner', { password: 0 });
       auctionEndAd.auctionEnded = true;
       auctionEndAd.timer = 0;
       if (auctionEndAd.currentBidder) {
@@ -68,6 +69,4 @@ exports.startAuction = async (req, res, next) => {
     console.log(err);
     res.status(500).json({ errors: [{ msg: 'Server error' }] });
   }
-};
-
-const runTimer = async (ad) => {};
+});

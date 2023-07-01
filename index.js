@@ -51,7 +51,7 @@ app.use("/api/ad",adRoute)
 app.use("/api/bid",bidRoute)
 app.use('/room', roomRoute);
 app.use('/auction', auctionRoute);
-app.use('/upload', require('./routes/uploads'));
+// app.use('/upload', require('./routes/uploads'));
 
 //The server logic goes here
 
