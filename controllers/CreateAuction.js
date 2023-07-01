@@ -1,5 +1,7 @@
-const Ad = require('../models/Ad');
+
+const AdModel = require('../models/AdModel');
 const User = require('../models/User');
+const UserModel = require('../models/UserModel');
 const io = require('../socket');
 
 // @route   POST /auction/start/:adId
@@ -7,9 +9,9 @@ const io = require('../socket');
 exports.startAuction = async (req, res, next) => {
   const { adId } = req.params;
   try {
-    let ad = await Ad.findById(adId).populate('owner', { password: 0 });
+    let ad = await AdModel.findById(adId).populate('owner', { password: 0 });
     if (!ad) return res.status(400).json({ errors: [{ msg: 'Ad not found' }] });
-    if (ad.owner._id != req.user.id)
+    if (ad.owner._id != req.userData.id)
       return res.status(400).json({ errors: [{ msg: 'Unauthorized to start' }] });
     if (ad.auctionEnded)
       return res.status(400).json({ errors: [{ msg: 'Auction has already ended' }] });
@@ -49,7 +51,7 @@ exports.startAuction = async (req, res, next) => {
         auctionEndAd.sold = true;
         await auctionEndAd.save();
         // Add product to winner
-        let winner = await User.findById(auctionEndAd.currentBidder);
+        let winner = await UserModel.findById(auctionEndAd.currentBidder);
         winner.purchasedProducts.push(auctionEndAd._id);
         await winner.save();
         io.getAdIo()
