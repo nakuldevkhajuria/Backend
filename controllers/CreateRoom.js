@@ -5,19 +5,20 @@ const asyncHandler = require("express-async-handler")
 // @route   POST /room/join/:roomId
 // @desc    Add user to a room
 const joinRoom =asyncHandler( async (req, res, next) => {
-  const { userData } = req.userData;
+  const  userData  = req.userData;
+  // const { _id } = req.userData;
   const { roomId } = req.params;
 
   try {
     let room = await RoomModel.findById(roomId);
     // Check if user already in room
     const userInRoom = room.users.find((roomUser) => {
-      return roomUser._id == userData.id ? true : false;
+      return roomUser._id == userData._id ? true : false;
     });
     if (userInRoom) {
       return res.status(400).json({ errors: [{ msg: 'Already joined' }] });
     }
-    room.users.push(userData.id);
+    room.users.push(userData._id);
     room.populate('users', { password: 0 });
     room = await room.save();
     res.status(200).json({ msg: 'Successfully joined', room });
@@ -33,7 +34,7 @@ const getRoom = asyncHandler(async (req, res, next) => {
   const { roomId } = req.params;
 
   try {
-    let room = await Room.findById(roomId).populate('users', { password: 0 });
+    let room = await RoomModel.findById(roomId).populate('users', { password: 0 });
     res.status(200).json(room);
   } catch (error) {
     console.log(error);
