@@ -13,8 +13,15 @@ const joinRoom =asyncHandler( async (req, res, next) => {
     let room = await RoomModel.findById(roomId);
     // Check if user already in room
     const userInRoom = room.users.find((roomUser) => {
-      return roomUser._id == userData._id ? true : false;
+      return roomUser._id.toString() === userData._id.toString() ? true : false;
     });
+//ids are converted to string, for better comparison
+
+    // if(userInRoom){
+    //   console.log('user is in the room alrady')
+
+    // }
+    // else{console.log('not in the room')}
     if (userInRoom) {
       return res.status(400).json({ errors: [{ msg: 'Already joined' }] });
     }
@@ -22,7 +29,8 @@ const joinRoom =asyncHandler( async (req, res, next) => {
     room.populate('users', { password: 0 });
     room = await room.save();
     res.status(200).json({ msg: 'Successfully joined', room });
-  } catch (error) {
+  }
+   catch (error) {
     console.log(error);
     res.status(500).json({ errors: [{ msg: 'Server error' }] });
   }
