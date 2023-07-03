@@ -9,7 +9,7 @@ const productRoute = require("./routes/ProductRoute")
 const adRoute = require("./routes/AdsRoute")
 const bidRoute = require("./routes/BidRoute")
 const roomRoute = require("./routes/RoomRoute")
-// const auctionRoute = require("./routes/AuctionRoute")
+const auctionRoute = require("./routes/AuctionRoute")
 
 
 const { createServer } = require('http');
@@ -50,7 +50,7 @@ app.use("/api/product",productRoute)
 app.use("/api/ad",adRoute)
 app.use("/api/bid",bidRoute)
 app.use('/api/room', roomRoute);
-// app.use('/api/auction', auctionRoute);
+app.use('/api/auction', auctionRoute);
 // app.use('/upload', require('./routes/uploads'));
 
 //The server logic goes here
