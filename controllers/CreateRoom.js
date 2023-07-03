@@ -17,11 +17,6 @@ const joinRoom =asyncHandler( async (req, res, next) => {
     });
 //ids are converted to string, for better comparison
 
-    // if(userInRoom){
-    //   console.log('user is in the room alrady')
-
-    // }
-    // else{console.log('not in the room')}
     if (userInRoom) {
       return res.status(400).json({ errors: [{ msg: 'Already joined' }] });
     }
