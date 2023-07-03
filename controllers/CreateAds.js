@@ -39,8 +39,9 @@ const addAd = asyncHandler(
                     owner: req.userData._id,
                 });
 
-                // Create room for auction
+                // Create room for auction and give the ad property, id of the user creating the ad
                 let room = new Room({ ad: ad._id });
+
                 room = await room.save();
 
                 ad.room = room._id;
